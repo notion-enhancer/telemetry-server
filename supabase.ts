@@ -2,8 +2,8 @@ import "https://deno.land/std@0.179.0/dotenv/load.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!,
-  SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!,
-  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_KEY")!,
+  supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 const supportedPlatforms = [
   "aix",
