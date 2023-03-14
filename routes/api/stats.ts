@@ -40,6 +40,7 @@ export const handler = async (
       by_platform?: { [k: string]: number };
       by_version?: { [k: string]: number };
       by_timezone?: { [k: string]: number };
+      by_mods?: { [k: string]: number };
     }> = {};
     for (const ping of data) {
       const week = getWeek(ping.timestamp);
@@ -55,6 +56,11 @@ export const handler = async (
       stats[week].by_timezone ??= {};
       stats[week].by_timezone![ping.timezone] ??= 0;
       stats[week].by_timezone![ping.timezone]!++;
+      stats[week].by_mods ??= {};
+      for (const id of ping.enabled_mods) {
+        stats[week].by_mods![id] ??= 0;
+        stats[week].by_mods![id]!++;
+      }
     }
 
     headers.set("content-type", "text/json");
