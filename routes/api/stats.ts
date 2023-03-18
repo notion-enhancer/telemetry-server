@@ -1,5 +1,7 @@
 import { HandlerContext } from "$fresh/server.ts";
+import { Status } from "std/http/mod.ts";
 import { supabase } from "../../supabase.ts";
+import { jsonResponse, statusResponse } from "./_lib.ts";
 
 interface Ping {
   timestamp: string;
@@ -9,7 +11,7 @@ interface Ping {
   enabled_mods: string[];
 }
 
-const formateDate = (date: Date) => {
+const formatDate = (date: Date) => {
     const yyyy = date.getUTCFullYear(),
       mm = String(date.getUTCMonth() + 1).padStart(2, "0"),
       dd = String(date.getDate() + 1).padStart(2, "0");
@@ -20,21 +22,21 @@ const formateDate = (date: Date) => {
       end = new Date(date);
     start.setDate(start.getDate() - start.getDay() + 1);
     end.setDate(end.getDate() + 6 - start.getDay());
-    return `${formateDate(start)}_${formateDate(end)}`;
+    return `${formatDate(start)}_${formatDate(end)}`;
   };
 
 export const handler = async (
   _req: Request,
   _ctx: HandlerContext,
 ): Promise<Response> => {
-  const headers = new Headers({ "Access-Control-Allow-Origin": "*" });
-
   try {
     const { data, error } = await supabase
       .from("telemetry_pings")
       .select("*");
     if (error) throw error;
 
+    // bring latest to top
+    data.reverse();
     const stats: Record<string, {
       weekly_users?: number;
       by_platform?: { [k: string]: number };
@@ -63,10 +65,9 @@ export const handler = async (
       }
     }
 
-    headers.set("content-type", "text/json");
-    return new Response(JSON.stringify(stats), { status: 200, headers });
+    return jsonResponse(stats);
   } catch (err) {
-    console.log(err);
-    return new Response(null, { status: 500, headers });
+    console.error(err);
+    return statusResponse(Status.InternalServerError);
   }
 };
