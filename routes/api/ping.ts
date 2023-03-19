@@ -1,14 +1,7 @@
 import { HandlerContext } from "$fresh/server.ts";
-import { Status } from "std/http/mod.ts";
-import { supabase } from "../../supabase.ts";
-import { statusResponse, textResponse } from "./_lib.ts";
-
-interface Ping {
-  platform: string;
-  version: string;
-  timezone: string;
-  enabled_mods: string[];
-}
+import { Status } from "$std/http/mod.ts";
+import { statusResponse, textResponse } from "~/utils/response.ts";
+import { supabase } from "~/utils/supabase.ts";
 
 export const handler = async (
   req: Request,

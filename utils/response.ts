@@ -1,4 +1,4 @@
-import { Status, STATUS_TEXT } from "std/http/mod.ts";
+import { Status, STATUS_TEXT } from "$std/http/mod.ts";
 
 const ensureHeaders = (
   init: ResponseInit = {},
@@ -25,7 +25,7 @@ const crossOriginResponse = (body: BodyInit, init: ResponseInit = {}) => {
   },
   jsonResponse = (data: unknown, init: ResponseInit = {}) => {
     ensureHeaders(init, { "Content-Type": "text/json" });
-    return crossOriginResponse(JSON.stringify(data, null, 2), init);
+    return crossOriginResponse(JSON.stringify(data), init);
   },
   textResponse = (text: string, init: ResponseInit = {}) => {
     ensureHeaders(init, { "Content-Type": "text/plain" });
